@@ -1,0 +1,34 @@
+:root {
+  --color-gray100: #aaa;
+  --color-gray200: #555;
+  --color-primary: #0a0;
+}
+
+.Slider {
+  position: relative;
+}
+
+.SliderTrack {
+  background: var(--color-gray100);
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 100vw;
+}
+
+.SliderTrackFill {
+  background: var(--color-primary);
+  height: 100%;
+  width: 0;
+}
+
+.SliderThumb {
+  background: var(--color-primary);
+  width: 3rem;
+  height: 3rem;
+  margin-top: -1.5rem;
+  margin-left: -1.5rem;
+  top: 50%;
+  left: 0;
+  border-radius: 100vw;
+  position: absolute;
+}
