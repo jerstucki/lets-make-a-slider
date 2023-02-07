@@ -1,17 +1,22 @@
 import { motion, useMotionValue, useMotionValueEvent } from "framer-motion";
 import "./Slider.css";
 
-export function Slider() {
-  const sliderWidth = 400;
+type SliderProps = {
+  width?: number;
+  onChange?: (value: number) => void;
+};
 
+const defaultWidth = 400;
+
+const defaultOnChange = (value: number) => {
+  console.log("slider value", value);
+};
+
+export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
   const x = useMotionValue(0);
 
-  useMotionValueEvent(x, "change", (xValue) => {
-    console.log(xValue);
-  });
-
   return (
-    <div className="Slider" style={{ width: sliderWidth }}>
+    <div className="Slider" style={{ width }}>
       <div className="SliderTrack">
         <motion.div
           className="SliderTrackFill"
@@ -24,9 +29,13 @@ export function Slider() {
           x,
         }}
         drag
-        dragConstraints={{ left: 0, right: sliderWidth, top: 0, bottom: 0 }}
+        dragConstraints={{ left: 0, right: width, top: 0, bottom: 0 }}
         dragElastic={false}
         dragMomentum={false}
+        onDrag={(e, info) => {
+          // FIXME: info.point.x is the coordinates within the viewport, not relative to the parent!
+          onChange(info.point.x);
+        }}
       ></motion.div>
     </div>
   );
