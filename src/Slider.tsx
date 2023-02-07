@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { motion, useMotionValue, useMotionValueEvent } from "framer-motion";
 import "./Slider.css";
 
@@ -13,10 +14,11 @@ const defaultOnChange = (value: number) => {
 };
 
 export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
+  const sliderEl = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
 
   return (
-    <div className="Slider" style={{ width }}>
+    <div ref={sliderEl} className="Slider" style={{ width }}>
       <div className="SliderTrack">
         <motion.div
           className="SliderTrackFill"
@@ -33,8 +35,13 @@ export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
         dragElastic={false}
         dragMomentum={false}
         onDrag={(e, info) => {
-          // FIXME: info.point.x is the coordinates within the viewport, not relative to the parent!
-          onChange(info.point.x);
+          if (sliderEl.current) {
+            const thumbX =
+              info.point.x -
+              sliderEl.current.getBoundingClientRect().x -
+              window.scrollX;
+            onChange(thumbX);
+          }
         }}
       ></motion.div>
     </div>
