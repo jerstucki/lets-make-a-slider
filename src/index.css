@@ -73,3 +73,8 @@ button:focus-visible {
   max-width: 32rem; */
   margin: auto;
 }
+
+.AppSliderValue {
+  margin-bottom: 2rem;
+  text-align: center;
+}
