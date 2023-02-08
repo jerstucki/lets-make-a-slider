@@ -1,3 +1,4 @@
+import { scalePoint } from "d3";
 import { motion, PanInfo, useMotionValue } from "framer-motion";
 import { useCallback, useRef } from "react";
 import "./Slider.css";
@@ -16,6 +17,7 @@ const defaultOnChange = (value: number) => {
 export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
   const sliderEl = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
+  const scaleX = scalePoint([10, 100, 1000, 5000], [0, width]);
 
   const handleDrag = useCallback<
     (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
@@ -26,8 +28,12 @@ export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
           info.point.x -
           sliderEl.current.getBoundingClientRect().x -
           window.scrollX;
+        console.log(scaleX.step());
+        const valueIndex = Math.round(
+          Math.max(0, Math.min(width, thumbX)) / scaleX.step()
+        );
 
-        onChange(Math.max(0, Math.min(width, thumbX)));
+        onChange(scaleX.domain()[valueIndex]);
       }
     },
     [onChange, width]
