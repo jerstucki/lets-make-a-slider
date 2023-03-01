@@ -1,9 +1,11 @@
 import { scalePoint } from "d3";
 import {
   motion,
+  MotionValue,
   PanInfo,
   useAnimationControls,
   useMotionValue,
+  useTransform,
 } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 import "./Slider.css";
@@ -44,7 +46,6 @@ export function Slider({
           info.point.x -
           sliderEl.current.getBoundingClientRect().x -
           window.scrollX;
-        console.log(scaleX.step());
         const valueIndex = Math.round(
           Math.max(0, Math.min(width, thumbX)) / scaleX.step()
         );
@@ -70,13 +71,12 @@ export function Slider({
       </div>
       {scaleX.domain().map((tickValue) => {
         return (
-          <motion.div
+          <Tick
             key={tickValue}
-            className="SliderTick"
-            style={{ x: scaleX(tickValue) }}
-          >
-            {tickValue}
-          </motion.div>
+            x={x}
+            tickX={scaleX(tickValue)!}
+            tickValue={tickValue}
+          ></Tick>
         );
       })}
       <motion.div
@@ -105,5 +105,29 @@ export function Slider({
         animate={animationControls}
       ></motion.div>
     </div>
+  );
+}
+
+function Tick({
+  x,
+  tickX,
+  tickValue,
+}: {
+  x: MotionValue;
+  tickX: number;
+  tickValue: number;
+}) {
+  const background = useTransform(x, (xValue) => {
+    return xValue > tickX ? "var(--color-primary)" : "var(--color-gray100)";
+  });
+
+  return (
+    <motion.div
+      key={tickValue}
+      className="SliderTick"
+      style={{ x: tickX, background }}
+    >
+      {tickValue}
+    </motion.div>
   );
 }
