@@ -32,6 +32,7 @@
   left: 0;
   border-radius: 100vw;
   position: absolute;
+  cursor: grab;
 }
 
 .SliderTick {
@@ -47,4 +48,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
 }

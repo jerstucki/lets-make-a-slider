@@ -76,6 +76,10 @@ export function Slider({
             x={x}
             tickX={scaleX(tickValue)!}
             tickValue={tickValue}
+            onClick={(value) => {
+              onChange(value);
+              animationControls.start({ x: scaleX(value) });
+            }}
           ></Tick>
         );
       })}
@@ -112,10 +116,12 @@ function Tick({
   x,
   tickX,
   tickValue,
+  onClick,
 }: {
   x: MotionValue;
   tickX: number;
   tickValue: number;
+  onClick: (value: number) => void;
 }) {
   const background = useTransform(x, (xValue) => {
     return xValue > tickX ? "var(--color-primary)" : "var(--color-gray100)";
@@ -126,6 +132,7 @@ function Tick({
       key={tickValue}
       className="SliderTick"
       style={{ x: tickX, background }}
+      onClick={() => onClick(tickValue)}
     >
       {tickValue}
     </motion.div>
