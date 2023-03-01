@@ -35,8 +35,8 @@ export function Slider({
     animationControls.start({ x: initialX });
   }, [initialX]);
 
-  const handleDrag = useCallback<
-    (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
+  const getCurrentValue = useCallback<
+    (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => number
   >(
     (e, info) => {
       if (sliderEl.current) {
@@ -48,9 +48,14 @@ export function Slider({
         const valueIndex = Math.round(
           Math.max(0, Math.min(width, thumbX)) / scaleX.step()
         );
+        const currentValue = scaleX.domain()[valueIndex];
 
-        onChange(scaleX.domain()[valueIndex]);
+        onChange(currentValue);
+
+        return currentValue;
       }
+
+      return scaleX.domain()[0];
     },
     [onChange, width]
   );
@@ -72,7 +77,20 @@ export function Slider({
         dragConstraints={{ left: 0, right: width, top: 0, bottom: 0 }}
         dragElastic={false}
         dragMomentum={false}
-        onDrag={handleDrag}
+        onDrag={(event, info) => {
+          const currentValue = getCurrentValue(event, info);
+          onChange(currentValue);
+        }}
+        onDragEnd={(event, info) => {
+          const currentValue = getCurrentValue(event, info);
+          onChange(currentValue);
+          animationControls.start({
+            x: scaleX(currentValue),
+            transition: {
+              delay: 0.01, // add slight delay, otherwise it interferes with drag
+            },
+          });
+        }}
         animate={animationControls}
       ></motion.div>
     </div>
