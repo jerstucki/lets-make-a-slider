@@ -1,9 +1,15 @@
 import { scalePoint } from "d3";
-import { motion, PanInfo, useMotionValue } from "framer-motion";
-import { useCallback, useRef } from "react";
+import {
+  motion,
+  PanInfo,
+  useAnimationControls,
+  useMotionValue,
+} from "framer-motion";
+import { useCallback, useEffect, useRef } from "react";
 import "./Slider.css";
 
 type SliderProps = {
+  initialValue: number;
   width?: number;
   onChange?: (value: number) => void;
 };
@@ -14,10 +20,20 @@ const defaultOnChange = (value: number) => {
   console.log("slider value", value);
 };
 
-export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
+export function Slider({
+  initialValue,
+  width = defaultWidth,
+  onChange = defaultOnChange,
+}: SliderProps) {
   const sliderEl = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
+  const animationControls = useAnimationControls();
   const scaleX = scalePoint([10, 100, 1000, 5000], [0, width]);
+  const initialX = scaleX(initialValue!) ?? 0;
+
+  useEffect(() => {
+    animationControls.start({ x: initialX });
+  }, [initialX]);
 
   const handleDrag = useCallback<
     (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
@@ -57,6 +73,7 @@ export function Slider({ width = defaultWidth, onChange = defaultOnChange }) {
         dragElastic={false}
         dragMomentum={false}
         onDrag={handleDrag}
+        animate={animationControls}
       ></motion.div>
     </div>
   );
