@@ -34,7 +34,10 @@ export function Slider({
   const initialX = scaleX(initialValue!) ?? 0;
 
   useEffect(() => {
-    animationControls.start({ x: initialX });
+    animationControls.start({
+      x: initialX,
+      transition: { type: "spring", duration: 1 },
+    });
   }, [initialX]);
 
   const getCurrentValue = useCallback<
@@ -101,12 +104,14 @@ export function Slider({
           onChange(currentValue);
           animationControls.start({
             x: scaleX(currentValue),
+            scale: 1,
             transition: {
               delay: 0.01, // add slight delay, otherwise it interferes with drag
             },
           });
         }}
         animate={animationControls}
+        whileHover={{ scale: 1.2 }}
       ></motion.div>
     </div>
   );
@@ -133,6 +138,7 @@ function Tick({
       className="SliderTick"
       style={{ x: tickX, background }}
       onClick={() => onClick(tickValue)}
+      whileHover={{ scale: 1.2 }}
     >
       {tickValue}
     </motion.div>
