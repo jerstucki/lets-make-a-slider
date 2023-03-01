@@ -68,6 +68,17 @@ export function Slider({
           style={{ width: x }}
         ></motion.div>
       </div>
+      {scaleX.domain().map((tickValue) => {
+        return (
+          <motion.div
+            key={tickValue}
+            className="SliderTick"
+            style={{ x: scaleX(tickValue) }}
+          >
+            {tickValue}
+          </motion.div>
+        );
+      })}
       <motion.div
         className="SliderThumb"
         style={{
